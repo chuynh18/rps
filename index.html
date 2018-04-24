@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Rock Paper Scissors</title>
+</head>
+
+<body id="theBody">
+<p><h1>Rocks, Papers, Scissors</h1></p>
+<p><b>Press r for rock, p for paper, or s for scissors</b></p>
+<p>You chose: <span id="yourChoice"></span></p>
+<p>I, the computer, chose: <span id="computerChoice"></span></p>
+<p>Wins: <span id="wins"></span></p>
+<p>Losses: <span id="losses"></span></p>
+<p>Draws: <span id="draws"></span></p>
+<p id="messageToUser"></p>
+
+  <script type="text/javascript">
+  // that's how I roll baby
+  "use strict";
+
+  // I'm just creating the variables my game will use... GLOBALLY
+    // the valid plays in RPS
+  var rpsArray = ["r", "p", "s"];
+  var pInput = "";
+  var pChoice = "";
+  var computerChoice = "";
+  var wins = 0;
+  var losses = 0;
+  var draws = 0;
+
+  // I'm just creating all the fucntions my game will use
+
+  // make the computer choose a play
+  function computerRPS() {
+    computerChoice = rpsArray[Math.floor(Math.random() * rpsArray.length)];
+    console.log("[info]: I chose " + computerChoice + "! No looking, you cheater!")
+  };
+
+  // update the scoreboard
+  function updateScore() {
+    document.getElementById("wins").innerHTML = wins;
+    document.getElementById("losses").innerHTML = losses;
+    document.getElementById("draws").innerHTML = draws;
+  };
+
+  // put the player's choice on the scoreboard
+  function showPlayerChoice() {
+    document.getElementById("yourChoice").innerHTML = pChoice;
+  }
+
+  // put the computer's choice on the scoreboard
+  function showComputerChoice() {
+    document.getElementById("computerChoice").innerHTML = computerChoice;
+  }
+
+  // upon draw, increment draws by 1, show what the computer played, make the computer choose a new play, and update the scoreboard
+  function gameDraw() {
+    draws++;
+    showComputerChoice();
+    updateScore();
+    computerRPS();
+    document.getElementById("messageToUser").textContent = "Draw!";
+    console.log("[info]: Game drawn.");
+  }
+
+  // upon win, increment wins by 1, show what the computer played, make the computer choose a new play, and update the scoreboard
+  function gameWin() {
+    wins++;
+    showComputerChoice();
+    updateScore();
+    computerRPS();
+    document.getElementById("messageToUser").textContent = "You win!";
+    console.log("[info]: Game WON by player.");
+  }
+
+  // upon loss, increment losses by 1, show what the computer played, make the computer choose a new play, and update the scoreboard
+  function gameLoss() {
+    losses++;
+    showComputerChoice();
+    updateScore();
+    computerRPS();
+    document.getElementById("messageToUser").textContent = "You lose!";
+    console.log("[info]: Game LOST by player.");
+  }
+
+  // obnoxious blinking
+    // the colors I will use
+  var green = "#aaffaa";
+  var orange = "#f5b041";
+  var yellow = "#ffffaa";
+  var red = "#ffaaaa";
+    // the blinking function itself
+  function blink(color) {
+      for (var i = 0; i < 5; i++) {
+          setTimeout(function(){
+          document.getElementById("theBody").style.backgroundColor = color;
+          }, 200 * i - 100);
+          setTimeout(function(){
+          document.getElementById("theBody").style.backgroundColor = "#ffffff";
+          }, 200 * i);
+      };
+  };
+
+  // initialize the game - only happens once, when the page is loaded
+  computerRPS();
+  updateScore();
+
+  // listen to keyup event
+  document.onkeyup = function(e) {
+    // take player input and convert it to lowercase, then store it in pChoice var
+    pInput = e.key.toLowerCase();
+    // commenting out a line I no longer need
+    // console.log("Player typed: " + pInput);
+
+    // check validity of choice and accept it if it's a valid RPS move
+    if (rpsArray.indexOf(pInput) !== -1) {
+      pChoice = pInput;
+      showPlayerChoice();
+      console.log("[info] Player threw: " + pChoice);
+      
+      // There are only three possibilities in RPS:  win, lose, draw
+      
+      // draw
+      if (pChoice === computerChoice) {
+        gameDraw();
+        blink(yellow);
+      }
+
+      // 3 ways to win:  rock beats scissors, paper beats rock, scissors beat paper
+      else if ((pChoice === "r" && computerChoice === "s") || (pChoice === "p" && computerChoice === "r") || (pChoice === "s" && computerChoice === "p")) {
+        gameWin();
+        blink(green);
+      }
+
+      // 3 ways to lose:  rock loses to paper, paper loses to scissors, scissors lose to rock
+      else if ((pChoice === "r" && computerChoice === "p") || (pChoice === "p" && computerChoice === "s") || (pChoice === "s" && computerChoice === "r")) {
+        gameLoss();
+        blink(red);
+      }
+
+      // this should NEVER happen.  It's here so I know I didn't account for a possibility.
+      else {
+        console.log("[error] unexpected error!  how did you do that!")
+      };
+
+    }
+    // capture invalid moves and tell the player they dun goofed
+    else if (rpsArray.indexOf(pInput) === -1) {
+      blink(orange);
+      document.getElementById("messageToUser").textContent = (pInput + " is not a valid RPS choice!");
+      console.log("[warn]: " + pInput + " is not a valid RPS choice!");
+    }
+
+    // this should NEVER happen.  It's here so I know I missed something.
+    else {
+      console.log("[error] unexpected error!  how did you do that!")
+    };
+
+  };
+  </script>
+
+</body>
+
+</html>
