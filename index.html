@@ -21,8 +21,9 @@
   "use strict";
 
   // I'm just creating the variables my game will use... GLOBALLY
-    // the valid plays in RPS
+    // array contains "r", "p", and "s" which stand for the three valid plays in RPS
   var rpsArray = ["r", "p", "s"];
+    // just creating these variables so that they exist
   var pInput = "";
   var pChoice = "";
   var computerChoice = "";
@@ -30,31 +31,32 @@
   var losses = 0;
   var draws = 0;
 
-  // I'm just creating all the fucntions my game will use
+  // I'm just creating all the functions my game will use
 
-  // make the computer choose a play
+  // this function makes the computer choose among rock, paper, or scissors
   function computerRPS() {
     computerChoice = rpsArray[Math.floor(Math.random() * rpsArray.length)];
-    console.log("[info]: I chose " + computerChoice + "! No looking, you cheater!")
+    console.log("[info]: I chose " + prettyPrint(computerChoice) + "! No looking, you cheater!")
   };
 
-  // update the scoreboard
+  // this function updates the HTML with the new win/loss/draw count; think of it as updating the scoreboard
   function updateScore() {
     document.getElementById("wins").innerHTML = wins;
     document.getElementById("losses").innerHTML = losses;
     document.getElementById("draws").innerHTML = draws;
   };
 
-  // put the player's choice on the scoreboard
+  // this function displays the player's choice in the HTML
   function showPlayerChoice() {
-    document.getElementById("yourChoice").innerHTML = pChoice;
+    document.getElementById("yourChoice").innerHTML = prettyPrint(pChoice);
   }
 
-  // put the computer's choice on the scoreboard
+  // this function displays the computer's choice in the HTML
   function showComputerChoice() {
-    document.getElementById("computerChoice").innerHTML = computerChoice;
+    document.getElementById("computerChoice").innerHTML = prettyPrint(computerChoice);
   }
 
+  // this function is called when the game is drawn (player and computer played the same hand)
   // upon draw, increment draws by 1, show what the computer played, make the computer choose a new play, and update the scoreboard
   function gameDraw() {
     draws++;
@@ -65,6 +67,7 @@
     console.log("[info]: Game drawn.");
   }
 
+  // this function is called when the player beats the computer
   // upon win, increment wins by 1, show what the computer played, make the computer choose a new play, and update the scoreboard
   function gameWin() {
     wins++;
@@ -75,6 +78,7 @@
     console.log("[info]: Game WON by player.");
   }
 
+  // this function is called when the player loses to the computer
   // upon loss, increment losses by 1, show what the computer played, make the computer choose a new play, and update the scoreboard
   function gameLoss() {
     losses++;
@@ -85,13 +89,13 @@
     console.log("[info]: Game LOST by player.");
   }
 
-  // obnoxious blinking
+  // this is the code I use to obnoxiously blink the screen
     // the colors I will use
   var green = "#aaffaa";
   var orange = "#f5b041";
   var yellow = "#ffffaa";
   var red = "#ffaaaa";
-    // the blinking function itself
+    // the blinking function itself - accepts green, orange, yellow, or red as arguments
   function blink(color) {
       for (var i = 0; i < 5; i++) {
           setTimeout(function(){
@@ -101,6 +105,23 @@
           document.getElementById("theBody").style.backgroundColor = "#ffffff";
           }, 200 * i);
       };
+  };
+
+  // this function makes the game friendlier by showing "rock" instead of "r" and so on
+  function prettyPrint(rps) {
+    if (rps === "r") {
+      return "Rock";
+    }
+    else if (rps === "p") {
+      return "Paper";
+    }
+    else if (rps === "s")
+      return "Scissors";
+      // this should NEVER happen as the function will NEVER be passed anything other than "r", "p", or "s"
+      // I just put it in here to close off the if/elif block with an else.  MY CODE IS READY FOR COSMIC RAYS
+    else {
+      console.log("[error]: function prettyPrint() was fed unexpected input.  This should not be possible, and yet here we are.");
+    };
   };
 
   // initialize the game - only happens once, when the page is loaded
@@ -118,9 +139,9 @@
     if (rpsArray.indexOf(pInput) !== -1) {
       pChoice = pInput;
       showPlayerChoice();
-      console.log("[info] Player threw: " + pChoice);
+      console.log("[info] Player threw: " + prettyPrint(pChoice));
       
-      // There are only three possibilities in RPS:  win, lose, draw
+      // There are only three possibilities in RPS:  win, lose, draw.  I handle all three cases below.
       
       // draw
       if (pChoice === computerChoice) {
